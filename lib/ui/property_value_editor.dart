@@ -62,8 +62,11 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: TextButton.icon(
-            onPressed: _valueError == null ? () => _remoteControl.sendNewValue(_controller.text) : null,
-            icon: Icon(Icons.send, color: _valueError == null ? Colors.green : Colors.grey),
+            onPressed: _valueError == null
+                ? () => _remoteControl.sendNewValue(_controller.text)
+                : null,
+            icon: Icon(Icons.send,
+                color: _valueError == null ? Colors.green : Colors.grey),
             label: const Text('Apply new value'),
           ),
         ),
@@ -78,7 +81,8 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
 
       final initialValue = _remoteControl.currentValue;
       if (initialValue.runtimeType != newValue.runtimeType) {
-        _typeError = 'WARN: Probably, the new value has a different type from the initial value';
+        _typeError =
+            'WARN: Probably, the new value has a different type from the initial value';
       } else {
         _typeError = null;
       }
@@ -88,7 +92,8 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
         final actualKeys = newValue.keys.toSet();
         final diff = initialKeys.difference(actualKeys);
         if (diff.isNotEmpty) {
-          _typeError = 'The following keys might be missing in the new value: ${diff.map((k) => "'$k'").join(', ')}';
+          _typeError =
+              'The following keys might be missing in the new value: ${diff.map((k) => "'$k'").join(', ')}';
         }
       }
     } catch (_) {

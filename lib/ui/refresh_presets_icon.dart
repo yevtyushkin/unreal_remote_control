@@ -8,10 +8,13 @@ class RefreshPresetsIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isConnected = context.select((RemoteControl rc) => rc.connectionStatus == ConnectionStatus.connected);
+    final isConnected = context.select((RemoteControl rc) =>
+        rc.connectionStatus == ConnectionStatus.connected);
 
     return IconButton(
-      onPressed: isConnected ? context.read<RemoteControl>().refreshTopLevelPresets : null,
+      onPressed: isConnected
+          ? context.read<RemoteControl>().refreshTopLevelPresets
+          : null,
       splashRadius: 0.1,
       icon: const Icon(Icons.refresh),
       tooltip: isConnected ? 'Refresh presets' : 'Not connected',

@@ -7,7 +7,8 @@ class PresetEntrySelectionDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (presets, selected) = context.select((RemoteControl rc) => (rc.presetEntries, rc.presetEntry));
+    final (presets, selected) = context
+        .select((RemoteControl rc) => (rc.presetEntries, rc.presetEntry));
 
     return DropdownButton(
       hint: const Text('Select preset'),

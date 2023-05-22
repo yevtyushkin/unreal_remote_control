@@ -8,7 +8,8 @@ class PresetOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (info, exposedProperty) = context.select((RemoteControl rc) => (rc.presetInfo, rc.exposedProperty));
+    final (info, exposedProperty) =
+        context.select((RemoteControl rc) => (rc.preset, rc.exposedProperty));
 
     if (info == null) {
       return const Center(
@@ -36,8 +37,12 @@ class PresetOverview extends StatelessWidget {
 
                           return ListTile(
                             title: Text(property.displayName),
-                            trailing: selected ? const Icon(Icons.check, color: Colors.green) : null,
-                            onTap: () => context.read<RemoteControl>().selectExposedProperty(property),
+                            trailing: selected
+                                ? const Icon(Icons.check, color: Colors.green)
+                                : null,
+                            onTap: () => context
+                                .read<RemoteControl>()
+                                .selectExposedProperty(property),
                           );
                         },
                       ).toList(),

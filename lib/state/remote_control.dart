@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide ConnectionState;
+import 'package:unreal_remote_control/model/exposed_property.dart';
+import 'package:unreal_remote_control/model/preset.dart';
+import 'package:unreal_remote_control/model/preset_entry.dart';
 import 'package:unreal_remote_control/state/connection_status.dart';
 import 'package:unreal_remote_control/state/in.dart';
 import 'package:unreal_remote_control/state/out.dart';
@@ -30,9 +33,9 @@ class RemoteControl extends ChangeNotifier {
 
   PresetEntry? get presetEntry => _presetEntry;
 
-  PresetInfo? _presetInfo;
+  Preset? _preset;
 
-  PresetInfo? get presetInfo => _presetInfo;
+  Preset? get preset => _preset;
 
   ExposedProperty? _exposedProperty;
 
@@ -68,7 +71,7 @@ class RemoteControl extends ChangeNotifier {
 
   void selectPresetEntry(PresetEntry? entry) {
     if (_presetEntry != entry) {
-      _presetInfo = null;
+      _preset = null;
       _exposedProperty = null;
       //TODO: unsubscribe from preset
     }
@@ -84,7 +87,7 @@ class RemoteControl extends ChangeNotifier {
   }
 
   void sendNewValue(String value) {
-    final preset = _presetInfo;
+    final preset = _preset;
     final property = _exposedProperty;
     if (preset == null || property == null) {
       error(
@@ -102,7 +105,7 @@ class RemoteControl extends ChangeNotifier {
   }
 
   void refreshValue() {
-    final preset = _presetInfo;
+    final preset = _preset;
     final property = _exposedProperty;
     if (preset == null || property == null) {
       error(
@@ -118,7 +121,7 @@ class RemoteControl extends ChangeNotifier {
     _exposedProperty = property;
 
     if (!_propertyValues.containsKey(property.displayName)) {
-      _send(getProperty(_presetInfo?.name ?? '', property.displayName));
+      _send(getProperty(_preset?.name ?? '', property.displayName));
     }
 
     notifyListeners();
@@ -145,7 +148,8 @@ class RemoteControl extends ChangeNotifier {
           final handledAsHttp = _tryHandleAsHttp(json);
           final handledAsPresetEvent = _tryHandleAsPresetEvent(json);
 
-          if (!(handledAsHttp || handledAsPresetEvent)) warn('Unknown msg: $json');
+          if (!(handledAsHttp || handledAsPresetEvent))
+            warn('Unknown msg: $json');
         } catch (e) {
           error('Failed to process message $asString due to $e');
         }
@@ -161,11 +165,12 @@ class RemoteControl extends ChangeNotifier {
 
       switch (envelope.response) {
         case AllPresets all:
-          _presetEntries = [...all.presets]..sort((a, b) => a.name.compareTo(b.name));
+          _presetEntries = [...all.presets]
+            ..sort((a, b) => a.name.compareTo(b.name));
           info('New preset entries: $_presetEntries');
         case GetPreset getPreset:
-          _presetInfo = getPreset.preset;
-          info('Got preset: $_presetInfo');
+          _preset = getPreset.preset;
+          info('Got preset: $_preset');
         case GetExposedProperty getProperty:
           _propertyValues[getProperty.exposedPropertyDescription.displayName] =
               getProperty.propertyValues.first.propertyValue;
