@@ -8,8 +8,10 @@ class RefreshPresetsIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isConnected = context.select((RemoteControl rc) =>
-        rc.connectionStatus == ConnectionStatus.connected);
+    final isConnected = context.select(
+      (RemoteControl rc) =>
+          rc.state.connectionStatus == ConnectionStatus.connected,
+    );
 
     return IconButton(
       onPressed: isConnected

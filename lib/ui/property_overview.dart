@@ -10,7 +10,8 @@ class ExposedPropertyOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final property = context.select((RemoteControl rc) => rc.exposedProperty);
+    final property =
+        context.select((RemoteControl rc) => rc.state.selectedExposedProperty);
 
     if (property == null) {
       return const Center(

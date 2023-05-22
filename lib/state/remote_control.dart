@@ -3,11 +3,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart' hide ConnectionState;
 import 'package:unreal_remote_control/model/exposed_property.dart';
-import 'package:unreal_remote_control/model/preset.dart';
 import 'package:unreal_remote_control/model/preset_entry.dart';
 import 'package:unreal_remote_control/state/connection_status.dart';
 import 'package:unreal_remote_control/state/in.dart';
 import 'package:unreal_remote_control/state/out.dart';
+import 'package:unreal_remote_control/state/remote_control_state.dart';
 import 'package:unreal_remote_control/state/timers.dart';
 import 'package:unreal_remote_control/util/log.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -21,74 +21,51 @@ class RemoteControl extends ChangeNotifier {
   StreamSubscription<ConnectionState>? _connectionStateSubscription;
   final Timers _timers = Timers();
 
-  ConnectionStatus _connectionStatus = ConnectionStatus.disconnected;
+  RemoteControlState _state = const RemoteControlState();
 
-  ConnectionStatus get connectionStatus => _connectionStatus;
-
-  List<PresetEntry> _presetEntries = [];
-
-  List<PresetEntry> get presetEntries => List.unmodifiable(_presetEntries);
-
-  PresetEntry? _presetEntry;
-
-  PresetEntry? get presetEntry => _presetEntry;
-
-  Preset? _preset;
-
-  Preset? get preset => _preset;
-
-  ExposedProperty? _exposedProperty;
-
-  ExposedProperty? get exposedProperty => _exposedProperty;
-
-  final Map<String, dynamic> _propertyValues = {};
-
-  dynamic get currentValue {
-    final exposedProperty = this.exposedProperty;
-    if (exposedProperty == null) return null;
-    return _propertyValues[exposedProperty.displayName];
-  }
+  RemoteControlState get state => _state;
 
   void changeConnectionUrl(String? value) {
     _connectionUrl = Uri.tryParse(value ?? '');
   }
 
   Future<void> toggleConnection() async {
-    if (_connectionStatus == ConnectionStatus.disconnected) {
+    if (state.connectionStatus == ConnectionStatus.disconnected) {
       final url = _connectionUrl;
       if (url != null) {
         final webSocket = WebSocket(url, binaryType: 'arraybuffer');
-        _connectionStatus = ConnectionStatus.connecting;
-        notifyListeners();
+        _state = _state.copyWith(connectionStatus: ConnectionStatus.connecting);
         _listen(webSocket);
       }
     } else {
-      _connectionStatus = ConnectionStatus.disconnected;
+      _state = _state.copyWith(connectionStatus: ConnectionStatus.disconnected);
       await _cleanUp();
-      notifyListeners();
-    }
-  }
-
-  void selectPresetEntry(PresetEntry? entry) {
-    if (_presetEntry != entry) {
-      _preset = null;
-      _exposedProperty = null;
-      //TODO: unsubscribe from preset
-    }
-
-    _presetEntry = entry;
-    if (entry != null) {
-      // TODO: subscribe to preset updates
-      _send(getPreset(entry.name));
-      _send(subscribeToPreset(entry.name));
     }
 
     notifyListeners();
   }
 
-  void sendNewValue(String value) {
-    final preset = _preset;
-    final property = _exposedProperty;
+  void selectPresetEntry(PresetEntry? entry) {
+    if (state.selectedPresetEntry != entry) {
+      _state = _state.copyWith(
+        presetGroups: [],
+        selectedExposedProperty: null,
+        selectedPresetEntry: entry,
+      );
+      notifyListeners();
+      //TODO: unsubscribe from preset
+    }
+
+    if (entry != null) {
+      _send(getPreset(entry.name));
+      // TODO: subscribe to preset updates
+    }
+  }
+
+  void applyPropertyValue(String value) {
+    final preset = _state.selectedPresetEntry;
+    final property = _state.selectedExposedProperty;
+
     if (preset == null || property == null) {
       error(
         'Failed to send new property value $value because one of selected preset($preset) or property($property) is null',
@@ -104,9 +81,10 @@ class RemoteControl extends ChangeNotifier {
     }
   }
 
-  void refreshValue() {
-    final preset = _preset;
-    final property = _exposedProperty;
+  void refreshPropertyValue() {
+    final preset = _state.selectedPresetEntry;
+    final property = _state.selectedExposedProperty;
+
     if (preset == null || property == null) {
       error(
         'Failed to refresh value because one of selected preset($preset) or property($property) is null',
@@ -118,11 +96,12 @@ class RemoteControl extends ChangeNotifier {
   }
 
   void selectExposedProperty(ExposedProperty property) {
-    _exposedProperty = property;
+    _state = _state.copyWith(
+      selectedExposedProperty: property,
+    );
 
-    if (!_propertyValues.containsKey(property.displayName)) {
-      _send(getProperty(_preset?.name ?? '', property.displayName));
-    }
+    _send(getProperty(
+        _state.selectedPresetEntry?.name ?? '', property.displayName));
 
     notifyListeners();
   }
@@ -136,8 +115,6 @@ class RemoteControl extends ChangeNotifier {
   }
 
   void _onMessage(dynamic value) {
-    info('Received top-lvl msg: $value');
-
     switch (value) {
       case List<int> codes:
         final asString = String.fromCharCodes(codes);
@@ -146,10 +123,8 @@ class RemoteControl extends ChangeNotifier {
           final json = jsonDecode(asString) as Map<String, dynamic>;
 
           final handledAsHttp = _tryHandleAsHttp(json);
-          final handledAsPresetEvent = _tryHandleAsPresetEvent(json);
 
-          if (!(handledAsHttp || handledAsPresetEvent))
-            warn('Unknown msg: $json');
+          if (!handledAsHttp) warn('Unknown msg: $json');
         } catch (e) {
           error('Failed to process message $asString due to $e');
         }
@@ -165,19 +140,21 @@ class RemoteControl extends ChangeNotifier {
 
       switch (envelope.response) {
         case AllPresets all:
-          _presetEntries = [...all.presets]
-            ..sort((a, b) => a.name.compareTo(b.name));
-          info('New preset entries: $_presetEntries');
+          _state = _state.copyWith(
+              presetEntries: [...all.presets]
+                ..sort((a, b) => a.name.compareTo(b.name)));
         case GetPreset getPreset:
-          _preset = getPreset.preset;
-          info('Got preset: $_preset');
+          _state = _state.copyWith(presetGroups: getPreset.preset.groups);
         case GetExposedProperty getProperty:
-          _propertyValues[getProperty.exposedPropertyDescription.displayName] =
-              getProperty.propertyValues.first.propertyValue;
-          info('Got property: $getProperty');
+          if (getProperty.exposedPropertyDescription ==
+              _state.selectedExposedProperty) {
+            _state = _state.copyWith(
+                exposedPropertyValue:
+                    getProperty.propertyValues.first.propertyValue);
+          }
         case null:
-          info('Received empty body response');
       }
+
       notifyListeners();
 
       return true;
@@ -188,12 +165,8 @@ class RemoteControl extends ChangeNotifier {
     return false;
   }
 
-  bool _tryHandleAsPresetEvent(Map<String, dynamic> json) {
-    return false;
-  }
-
   Future<void> _onConnectionState(ConnectionState state) async {
-    _connectionStatus = switch (state) {
+    final connectionStatus = switch (state) {
       Connecting _ => ConnectionStatus.connecting,
       Reconnecting _ => ConnectionStatus.connecting,
       Connected _ => ConnectionStatus.connected,
@@ -203,13 +176,15 @@ class RemoteControl extends ChangeNotifier {
       _ => ConnectionStatus.disconnected
     };
 
-    info('New connection status: $_connectionStatus (after received $state)');
+    _state = _state.copyWith(connectionStatus: connectionStatus);
 
-    if (_connectionStatus == ConnectionStatus.disconnected) {
+    info('New connection status: $connectionStatus (after received $state)');
+
+    if (connectionStatus == ConnectionStatus.disconnected) {
       await _cleanUp();
     }
 
-    if (_connectionStatus == ConnectionStatus.connected) {
+    if (connectionStatus == ConnectionStatus.connected) {
       _timers.register(
         Timer.periodic(_pingInterval, (_) => _send('ping')),
       );

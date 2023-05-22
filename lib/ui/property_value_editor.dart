@@ -27,8 +27,8 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
 
     _remoteControl = context.read<RemoteControl>();
 
-    _cachedValue = _remoteControl.currentValue;
-    _controller.text = _encoder.convert(_remoteControl.currentValue);
+    _cachedValue = _remoteControl.state.exposedPropertyValue;
+    _controller.text = _encoder.convert(_cachedValue);
 
     _controller.addListener(_onTextValueChanged);
     _remoteControl.addListener(_listenToValueUpdates);
@@ -54,7 +54,7 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: TextButton.icon(
-            onPressed: _remoteControl.refreshValue,
+            onPressed: _remoteControl.refreshPropertyValue,
             icon: const Icon(Icons.refresh, color: Colors.blue),
             label: const Text('Restore actual value'),
           ),
@@ -63,7 +63,7 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
           padding: const EdgeInsets.only(top: 4.0),
           child: TextButton.icon(
             onPressed: _valueError == null
-                ? () => _remoteControl.sendNewValue(_controller.text)
+                ? () => _remoteControl.applyPropertyValue(_controller.text)
                 : null,
             icon: Icon(Icons.send,
                 color: _valueError == null ? Colors.green : Colors.grey),
@@ -79,7 +79,7 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
       final newValue = jsonDecode(_controller.text);
       _valueError = null;
 
-      final initialValue = _remoteControl.currentValue;
+      final initialValue = _remoteControl.state.exposedPropertyValue;
       if (initialValue.runtimeType != newValue.runtimeType) {
         _typeError =
             'WARN: Probably, the new value has a different type from the initial value';
@@ -104,9 +104,10 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
   }
 
   void _listenToValueUpdates() {
-    if (_cachedValue != _remoteControl.currentValue) {
-      _controller.text = _encoder.convert(_remoteControl.currentValue);
-      _cachedValue = _remoteControl.currentValue;
+    final newValue = _remoteControl.state.exposedPropertyValue;
+    if (_cachedValue != newValue) {
+      _controller.text = _encoder.convert(newValue);
+      _cachedValue = newValue;
     }
   }
 

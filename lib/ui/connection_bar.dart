@@ -8,8 +8,8 @@ class ConnectionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final connectionStatus = context
-        .select<RemoteControl, ConnectionStatus>((rc) => rc.connectionStatus);
+    final connectionStatus = context.select<RemoteControl, ConnectionStatus>(
+        (rc) => rc.state.connectionStatus);
 
     return Row(
       children: [

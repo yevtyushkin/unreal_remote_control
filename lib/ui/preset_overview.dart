@@ -8,14 +8,10 @@ class PresetOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (info, exposedProperty) =
-        context.select((RemoteControl rc) => (rc.preset, rc.exposedProperty));
-
-    if (info == null) {
-      return const Center(
-        child: Text('No preset selected'),
-      );
-    }
+    final (groups, exposedProperty) = context.select(
+      (RemoteControl rc) =>
+          (rc.state.presetGroups, rc.state.selectedExposedProperty),
+    );
 
     return Row(
       children: [
@@ -25,9 +21,9 @@ class PresetOverview extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: info.groups.length,
+                  itemCount: groups.length,
                   itemBuilder: (_, i) {
-                    final group = info.groups[i];
+                    final group = groups[i];
 
                     return ExpansionTile(
                       title: Text(group.name),
