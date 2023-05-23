@@ -16,30 +16,17 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
 
-      - name: Install Nativefier
-        run: npm install -g nativefier
-
       - name: Codegen
         run: flutter pub get && flutter pub run build_runner build
 
-      - name: Run Flutter web app in detached mode (macOS)
-        run: flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0 --release &
+      - name: Build Flutter app for macOS
+        run: flutter build macos --release
 
-      - name: Wait for app to start
-        run: |
-          until curl --output /dev/null --silent --fail http://localhost:8080; do
-              echo "Waiting for app to start..."
-              sleep 2
-          done
-
-      - name: Bundle app for macOS
-        run: nativefier --name "Unreal-Remote-Control-UI" http://localhost:8080/
-
-      - name: Archive and upload macOS artifact
+      - name: Upload macOS artifact
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-macos
-          path: Unreal-Remote-Control-UI-darwin-x64/
+          path: build/macos/Build/Products/Release/*.app
 
   build_windows:
     runs-on: windows-latest
@@ -51,28 +38,14 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
 
-      - name: Install Nativefier
-        run: npm install -g nativefier
-
       - name: Codegen
         run: flutter pub get && flutter pub run build_runner build
 
-      - name: Run Flutter web app in detached mode (Windows)
-        run: start flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0 --release
+      - name: Build Flutter app for Windows
+        run: flutter build windows --release
 
-      - name: Wait for app to start
-        run: |
-          :loop
-          (echo. & echo Waiting for app to start...) && (curl --output NUL --silent --fail http://localhost:8080 || ping -n 2 127.0.0.1 > NUL) && goto :loop
-
-      - name: Bundle app for Windows
-        run: nativefier --name "Unreal-Remote-Control-UI" http://localhost:8080/
-
-      - name: Bundle app for Windows
-        run: nativefier --platform windows --name "Unreal-Remote-Control-UI" ./build/web/
-
-      - name: Archive and upload Windows artifact
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-windows
-          path: Unreal-Remote-Control-UI-win32-x64/
+          path: build/windows/*.exe
