@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide ConnectionState;
+import 'package:unreal_remote_control/model/exposed_function.dart';
 import 'package:unreal_remote_control/model/exposed_property.dart';
 import 'package:unreal_remote_control/model/preset_entry.dart';
 import 'package:unreal_remote_control/state/connection_status.dart';
 import 'package:unreal_remote_control/state/in.dart';
 import 'package:unreal_remote_control/state/out.dart';
 import 'package:unreal_remote_control/state/remote_control_state.dart';
+import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
 import 'package:unreal_remote_control/state/timers.dart';
 import 'package:unreal_remote_control/util/log.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -48,9 +50,9 @@ class RemoteControl extends ChangeNotifier {
   void selectPresetEntry(PresetEntry? entry) {
     if (state.selectedPresetEntry != entry) {
       _state = _state.copyWith(
-        presetGroups: [],
-        selectedExposedProperty: null,
         selectedPresetEntry: entry,
+        presetGroups: [],
+        selectedPresetGroupField: null,
       );
       notifyListeners();
       //TODO: unsubscribe from preset
@@ -64,18 +66,18 @@ class RemoteControl extends ChangeNotifier {
 
   void applyPropertyValue(String value) {
     final preset = _state.selectedPresetEntry;
-    final property = _state.selectedExposedProperty;
+    final field = _state.selectedPresetGroupField;
 
-    if (preset == null || property == null) {
+    if (preset == null || field is! SelectedProperty) {
       error(
-        'Failed to send new property value $value because one of selected preset($preset) or property($property) is null',
+        'Failed to send new property value $value because one of selected preset($preset) or property($field) is null',
       );
       return;
     }
 
     try {
       final newValue = jsonDecode(value);
-      _send(setProperty(preset.name, property.displayName, newValue));
+      _send(setProperty(preset.name, field.property.displayName, newValue));
     } catch (_) {
       error("Failed to send $value, because it's not a valid JSON / primitive");
     }
@@ -83,25 +85,30 @@ class RemoteControl extends ChangeNotifier {
 
   void refreshPropertyValue() {
     final preset = _state.selectedPresetEntry;
-    final property = _state.selectedExposedProperty;
+    final field = _state.selectedPresetGroupField;
 
-    if (preset == null || property == null) {
+    if (preset == null || field is! SelectedProperty) {
       error(
-        'Failed to refresh value because one of selected preset($preset) or property($property) is null',
+        'Failed to refresh value because one of selected preset($preset) or property($field) is null',
       );
       return;
     }
 
-    _send(getProperty(preset.name, property.displayName));
+    _send(getProperty(preset.name, field.property.displayName));
   }
 
   void selectExposedProperty(ExposedProperty property) {
     _state = _state.copyWith(
-      selectedExposedProperty: property,
+      selectedPresetGroupField: SelectedProperty(property: property, value: null),
     );
 
-    _send(getProperty(
-        _state.selectedPresetEntry?.name ?? '', property.displayName));
+    _send(getProperty(_state.selectedPresetEntry?.name ?? '', property.displayName));
+
+    notifyListeners();
+  }
+
+  void selectExposedFunction(ExposedFunction function) {
+    _state = _state.copyWith(selectedPresetGroupField: SelectedFunction(function: function));
 
     notifyListeners();
   }
@@ -140,18 +147,19 @@ class RemoteControl extends ChangeNotifier {
 
       switch (envelope.response) {
         case AllPresets all:
-          _state = _state.copyWith(
-              presetEntries: [...all.presets]
-                ..sort((a, b) => a.name.compareTo(b.name)));
+          _state = _state.copyWith(presetEntries: [...all.presets]..sort((a, b) => a.name.compareTo(b.name)));
         case GetPreset getPreset:
           _state = _state.copyWith(presetGroups: getPreset.preset.groups);
         case GetExposedProperty getProperty:
-          if (getProperty.exposedPropertyDescription ==
-              _state.selectedExposedProperty) {
+          final selectedField = _state.selectedPresetGroupField;
+          if (selectedField is SelectedProperty && selectedField.property == getProperty.exposedPropertyDescription) {
             _state = _state.copyWith(
-                exposedPropertyValue:
-                    getProperty.propertyValues.first.propertyValue);
+              selectedPresetGroupField: selectedField.copyWith(
+                value: getProperty.propertyValues.first.propertyValue,
+              ),
+            );
           }
+
         case null:
       }
 

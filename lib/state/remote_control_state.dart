@@ -3,6 +3,7 @@ import 'package:unreal_remote_control/model/exposed_property.dart';
 import 'package:unreal_remote_control/model/preset_entry.dart';
 import 'package:unreal_remote_control/model/preset_group.dart';
 import 'package:unreal_remote_control/state/connection_status.dart';
+import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
 
 part 'remote_control_state.freezed.dart';
 
@@ -13,7 +14,6 @@ class RemoteControlState with _$RemoteControlState {
     @Default([]) List<PresetEntry> presetEntries,
     PresetEntry? selectedPresetEntry,
     @Default([]) List<PresetGroup> presetGroups,
-    ExposedProperty? selectedExposedProperty,
-    dynamic exposedPropertyValue,
+    SelectedPresetGroupField? selectedPresetGroupField,
   }) = _RemoteControlState;
 }

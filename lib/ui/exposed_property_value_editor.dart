@@ -3,21 +3,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/state/remote_control.dart';
+import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
 
 const _encoder = JsonEncoder.withIndent('      ');
 
-class PropertyValueEditor extends StatefulWidget {
-  const PropertyValueEditor({Key? key}) : super(key: key);
+class ExposedPropertyValueEditor extends StatefulWidget {
+  const ExposedPropertyValueEditor({Key? key}) : super(key: key);
 
   @override
-  State<PropertyValueEditor> createState() => _PropertyValueEditorState();
+  State<ExposedPropertyValueEditor> createState() => _ExposedPropertyValueEditorState();
 }
 
-class _PropertyValueEditorState extends State<PropertyValueEditor> {
+class _ExposedPropertyValueEditorState extends State<ExposedPropertyValueEditor> {
   final _formKey = UniqueKey();
   final _controller = TextEditingController();
   late final RemoteControl _remoteControl;
-  dynamic _cachedValue;
+  dynamic _currentValue;
   String? _valueError;
   String? _typeError;
 
@@ -27,8 +28,8 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
 
     _remoteControl = context.read<RemoteControl>();
 
-    _cachedValue = _remoteControl.state.exposedPropertyValue;
-    _controller.text = _encoder.convert(_cachedValue);
+    _updateCurrentValue();
+    _controller.text = _encoder.convert(_currentValue);
 
     _controller.addListener(_onTextValueChanged);
     _remoteControl.addListener(_listenToValueUpdates);
@@ -62,11 +63,8 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: TextButton.icon(
-            onPressed: _valueError == null
-                ? () => _remoteControl.applyPropertyValue(_controller.text)
-                : null,
-            icon: Icon(Icons.send,
-                color: _valueError == null ? Colors.green : Colors.grey),
+            onPressed: _valueError == null ? () => _remoteControl.applyPropertyValue(_controller.text) : null,
+            icon: Icon(Icons.send, color: _valueError == null ? Colors.green : Colors.grey),
             label: const Text('Apply new value'),
           ),
         ),
@@ -79,21 +77,18 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
       final newValue = jsonDecode(_controller.text);
       _valueError = null;
 
-      final initialValue = _remoteControl.state.exposedPropertyValue;
-      if (initialValue.runtimeType != newValue.runtimeType) {
-        _typeError =
-            'WARN: Probably, the new value has a different type from the initial value';
+      if (_currentValue.runtimeType != newValue.runtimeType) {
+        _typeError = 'WARN: Probably, the new value has a different type from the initial value';
       } else {
         _typeError = null;
       }
 
-      if (initialValue is Map && newValue is Map) {
-        final initialKeys = initialValue.keys.toSet();
+      if (_currentValue is Map && newValue is Map) {
+        final initialKeys = _currentValue.keys.toSet();
         final actualKeys = newValue.keys.toSet();
         final diff = initialKeys.difference(actualKeys);
         if (diff.isNotEmpty) {
-          _typeError =
-              'The following keys might be missing in the new value: ${diff.map((k) => "'$k'").join(', ')}';
+          _typeError = 'The following keys might be missing in the new value: ${diff.map((k) => "'$k'").join(', ')}';
         }
       }
     } catch (_) {
@@ -104,10 +99,18 @@ class _PropertyValueEditorState extends State<PropertyValueEditor> {
   }
 
   void _listenToValueUpdates() {
-    final newValue = _remoteControl.state.exposedPropertyValue;
-    if (_cachedValue != newValue) {
-      _controller.text = _encoder.convert(newValue);
-      _cachedValue = newValue;
+    final valueBeforeUpdate = _currentValue;
+    _updateCurrentValue();
+
+    if (_currentValue != valueBeforeUpdate) {
+      _controller.text = _encoder.convert(_currentValue);
+    }
+  }
+
+  void _updateCurrentValue() {
+    final selectedField = _remoteControl.state.selectedPresetGroupField;
+    if (selectedField is SelectedProperty) {
+      _currentValue = selectedField.value;
     }
   }
 
