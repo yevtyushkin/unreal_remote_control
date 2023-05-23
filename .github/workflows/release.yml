@@ -22,11 +22,18 @@ jobs:
       - name: Codegen
         run: flutter pub get && flutter pub run build_runner build
 
-      - name: Build Flutter web app
-        run: flutter build web --release
+      - name: Run Flutter web app in detached mode (macOS)
+        run: flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0 --release &
+
+      - name: Wait for app to start
+        run: |
+          until curl --output /dev/null --silent --fail http://localhost:8080; do
+              echo "Waiting for app to start..."
+              sleep 2
+          done
 
       - name: Bundle app for macOS
-        run: nativefier --platform darwin --name "Unreal-Remote-Control-UI" ./build/web/
+        run: nativefier --name "Unreal-Remote-Control-UI" http://localhost:8080/
 
       - name: Archive and upload macOS artifact
         uses: actions/upload-artifact@v2
@@ -50,8 +57,16 @@ jobs:
       - name: Codegen
         run: flutter pub get && flutter pub run build_runner build
 
-      - name: Build Flutter web app
-        run: flutter build web --release
+      - name: Run Flutter web app in detached mode (Windows)
+        run: start flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0 --release
+
+      - name: Wait for app to start
+        run: |
+          :loop
+          (echo. & echo Waiting for app to start...) && (curl --output NUL --silent --fail http://localhost:8080 || ping -n 2 127.0.0.1 > NUL) && goto :loop
+
+      - name: Bundle app for Windows
+        run: nativefier --name "Unreal-Remote-Control-UI" http://localhost:8080/
 
       - name: Bundle app for Windows
         run: nativefier --platform windows --name "Unreal-Remote-Control-UI" ./build/web/
