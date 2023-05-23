@@ -22,11 +22,14 @@ jobs:
       - name: Build Flutter app for macOS
         run: flutter build macos --release
 
+      - name: Set executable permission for macOS app
+        run: chmod +x build/macos/Build/Products/Release/unreal_remote_control.app/Contents/MacOS/unreal_remote_control
+
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-macos
-          path: build/macos/Build/Products/Release/*.app
+          path: build/macos/Build/Products/Release/unreal_remote_control.app
 
   build_windows:
     runs-on: windows-latest
@@ -48,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-windows
-          path: build/windows/*.exe
+          path: build/windows/runner/Release/unreal_remote_control.exe
