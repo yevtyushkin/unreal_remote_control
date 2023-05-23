@@ -25,8 +25,7 @@ class HttpResponseEnvelope with _$HttpResponseEnvelope {
     return HttpResponse.customFromJson(_responseBody);
   }
 
-  factory HttpResponseEnvelope.fromJson(Map<String, dynamic> json) =>
-      _$HttpResponseEnvelopeFromJson(json);
+  factory HttpResponseEnvelope.fromJson(Map<String, dynamic> json) => _$HttpResponseEnvelopeFromJson(json);
 }
 
 @freezed
@@ -44,15 +43,16 @@ sealed class HttpResponse with _$HttpResponse {
     required List<PropertyValue> propertyValues,
   }) = GetExposedProperty;
 
+  const factory HttpResponse.functionCall() = FunctionCall;
+
   factory HttpResponse.customFromJson(Map<String, dynamic> json) {
     if (json.containsKey('Presets')) return AllPresets.fromJson(json);
     if (json.containsKey('Preset')) return GetPreset.fromJson(json);
-    if (json.containsKey('ExposedPropertyDescription'))
-      return GetExposedProperty.fromJson(json);
+    if (json.containsKey('ExposedPropertyDescription')) return GetExposedProperty.fromJson(json);
+    if (json.containsKey('ReturnedValues')) return FunctionCall.fromJson(json);
 
     throw "Can't parse $json into HttpResponse";
   }
 
-  factory HttpResponse.fromJson(Map<String, dynamic> json) =>
-      _$HttpResponseFromJson(json);
+  factory HttpResponse.fromJson(Map<String, dynamic> json) => _$HttpResponseFromJson(json);
 }

@@ -15,7 +15,7 @@ class ExposedFunctionOverview extends StatelessWidget {
     final supported = selected.function.underlyingFunction.arguments.isEmpty;
 
     return TextButton.icon(
-      onPressed: supported ? () {} : null,
+      onPressed: supported ? context.read<RemoteControl>().callSelectedFunction : null,
       icon: const Icon(Icons.send, color: Colors.blue),
       label: const Text('Call function'),
     );

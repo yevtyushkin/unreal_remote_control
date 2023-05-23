@@ -97,6 +97,25 @@ class RemoteControl extends ChangeNotifier {
     _send(getProperty(preset.name, field.property.displayName));
   }
 
+  void callSelectedFunction() {
+    final preset = _state.selectedPresetEntry;
+    final field = _state.selectedPresetGroupField;
+
+    if (preset == null || field is! SelectedFunction) {
+      error(
+        'Failed to call function because one of selected preset($preset) or function($field) is null',
+      );
+      return;
+    }
+
+    if (field.function.underlyingFunction.arguments.isNotEmpty) {
+      error('Functions with more that 0 arguments are not supported yet');
+      return;
+    }
+
+    _send(callFunction(preset.name, field.function.displayName, {}));
+  }
+
   void selectExposedProperty(ExposedProperty property) {
     _state = _state.copyWith(
       selectedPresetGroupField: SelectedProperty(property: property, value: null),
@@ -159,7 +178,7 @@ class RemoteControl extends ChangeNotifier {
               ),
             );
           }
-
+        case FunctionCall _:
         case null:
       }
 
