@@ -25,11 +25,18 @@ jobs:
       - name: Set executable permission for macOS app
         run: chmod +x build/macos/Build/Products/Release/unreal_remote_control.app/Contents/MacOS/unreal_remote_control
 
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: Unreal-Remote-Control-UI-macos.zip
+          directory: build/macos/Build/Products/Release
+
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-macos
-          path: build/macos/Build/Products/Release/*.app
+          path: build/macos/Build/Products/Release/Unreal-Remote-Control-UI-macos.zip
 
   build_windows:
     runs-on: windows-latest
@@ -47,8 +54,15 @@ jobs:
       - name: Build Flutter app for Windows
         run: flutter build windows --release
 
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: Unreal-Remote-Control-UI-windows.zip
+          directory: build/windows/runner/Release
+
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v2
         with:
           name: Unreal-Remote-Control-UI-windows
-          path: build/windows/runner/Release/*.exe
+          path: build/windows/runner/Release/Unreal-Remote-Control-UI-windows.zip
