@@ -44,7 +44,7 @@ jobs:
       - name: Install Nativefier
         run: npm install -g nativefier
 
-      - name: Run build_runner for code generation
+      - name: Codegen
         run: flutter pub run build_runner build
 
       - name: Build Flutter web app
