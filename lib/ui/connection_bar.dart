@@ -8,8 +8,7 @@ class ConnectionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final connectionStatus = context.select<RemoteControl, ConnectionStatus>(
-        (rc) => rc.state.connectionStatus);
+    final connectionStatus = context.select<RemoteControl, ConnectionStatus>((rc) => rc.state.connectionStatus);
 
     return Row(
       children: [
@@ -25,13 +24,10 @@ class ConnectionBar extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: connectionStatus != ConnectionStatus.connecting
-              ? context.read<RemoteControl>().toggleConnection
-              : null,
+          onPressed: context.read<RemoteControl>().toggleConnection,
           child: Text(
             switch (connectionStatus) {
               ConnectionStatus.connected => 'Disconnect',
-              ConnectionStatus.connecting => 'Connecting',
               ConnectionStatus.disconnected => 'Connect'
             },
           ),

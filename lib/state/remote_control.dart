@@ -36,7 +36,7 @@ class RemoteControl extends ChangeNotifier {
       final url = _connectionUrl;
       if (url != null) {
         final webSocket = WebSocket(url, binaryType: 'arraybuffer');
-        _state = _state.copyWith(connectionStatus: ConnectionStatus.connecting);
+        _state = _state.copyWith(connectionStatus: ConnectionStatus.disconnected);
         _listen(webSocket);
       }
     } else {
@@ -194,11 +194,11 @@ class RemoteControl extends ChangeNotifier {
 
   Future<void> _onConnectionState(ConnectionState state) async {
     final connectionStatus = switch (state) {
-      Connecting _ => ConnectionStatus.connecting,
-      Reconnecting _ => ConnectionStatus.connecting,
+      Connecting _ => ConnectionStatus.disconnected,
+      Reconnecting _ => ConnectionStatus.disconnected,
       Connected _ => ConnectionStatus.connected,
       Reconnected _ => ConnectionStatus.connected,
-      Disconnecting _ => ConnectionStatus.connecting,
+      Disconnecting _ => ConnectionStatus.disconnected,
       Disconnected _ => ConnectionStatus.disconnected,
       _ => ConnectionStatus.disconnected
     };
@@ -206,10 +206,6 @@ class RemoteControl extends ChangeNotifier {
     _state = _state.copyWith(connectionStatus: connectionStatus);
 
     info('New connection status: $connectionStatus (after received $state)');
-
-    if (connectionStatus == ConnectionStatus.disconnected) {
-      await _cleanUp();
-    }
 
     if (connectionStatus == ConnectionStatus.connected) {
       _timers.register(
@@ -241,5 +237,12 @@ class RemoteControl extends ChangeNotifier {
     _socket = null;
     _messageSubscription = null;
     _connectionStateSubscription = null;
+    _state = _state.copyWith(
+      selectedPresetEntry: null,
+      presetGroups: [],
+      presetEntries: [],
+      selectedPresetGroupField: null,
+    );
+    notifyListeners();
   }
 }
