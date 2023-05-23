@@ -20,7 +20,7 @@ jobs:
         run: npm install -g nativefier
 
       - name: Codegen
-        run: flutter pub run build_runner build
+        run: flutter pub get && flutter pub run build_runner build
 
       - name: Build Flutter web app
         run: flutter build web --release
@@ -48,7 +48,7 @@ jobs:
         run: npm install -g nativefier
 
       - name: Codegen
-        run: flutter pub run build_runner build
+        run: flutter pub get && flutter pub run build_runner build
 
       - name: Build Flutter web app
         run: flutter build web --release
