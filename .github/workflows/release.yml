@@ -1,0 +1,61 @@
+name: Release bundled apps
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install Nativefier
+        run: npm install -g nativefier
+
+      - name: Build Flutter web app
+        run: flutter build web --release
+
+      - name: Bundle app for macOS
+        run: nativefier --platform darwin --name "Unreal-Remote-Control-UI" ./build/web/
+
+      - name: Archive and upload macOS artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unreal-Remote-Control-UI-macos
+          path: Unreal-Remote-Control-UI-darwin-x64/
+
+  build_windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install Nativefier
+        run: npm install -g nativefier
+
+      - name: Build Flutter web app
+        run: flutter build web --release
+
+      - name: Bundle app for Windows
+        run: nativefier --platform windows --name "Unreal-Remote-Control-UI" ./build/web/
+
+      - name: Archive and upload Windows artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unreal-Remote-Control-UI-windows
+          path: Unreal-Remote-Control-UI-win32-x64/
