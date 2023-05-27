@@ -2,16 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide ConnectionState;
-import 'package:unreal_remote_control/model/exposed_function.dart';
-import 'package:unreal_remote_control/model/exposed_property.dart';
-import 'package:unreal_remote_control/model/preset_entry.dart';
-import 'package:unreal_remote_control/state/connection_status.dart';
-import 'package:unreal_remote_control/state/in.dart';
-import 'package:unreal_remote_control/state/out.dart';
-import 'package:unreal_remote_control/state/remote_control_state.dart';
-import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
-import 'package:unreal_remote_control/state/timers.dart';
-import 'package:unreal_remote_control/util/log.dart';
+import 'package:unreal_remote_control/common/log.dart';
+import 'package:unreal_remote_control/controls/model/exposed_function.dart';
+import 'package:unreal_remote_control/controls/model/exposed_property.dart';
+import 'package:unreal_remote_control/controls/model/preset_entry.dart';
+import 'package:unreal_remote_control/controls/state/connection_status.dart';
+import 'package:unreal_remote_control/controls/state/in.dart';
+import 'package:unreal_remote_control/controls/state/out.dart';
+import 'package:unreal_remote_control/controls/state/remote_control_state.dart';
+import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/controls/state/timers.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 const _pingInterval = Duration(seconds: 5);

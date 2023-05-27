@@ -1,9 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/exposed_property.dart';
-import 'package:unreal_remote_control/model/preset_entry.dart';
-import 'package:unreal_remote_control/model/preset_group.dart';
-import 'package:unreal_remote_control/state/connection_status.dart';
-import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/controls/model/preset_entry.dart';
+import 'package:unreal_remote_control/controls/model/preset_group.dart';
+import 'package:unreal_remote_control/controls/state/connection_status.dart';
+import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
 
 part 'remote_control_state.freezed.dart';
 

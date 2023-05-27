@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/preset_group.dart';
+import 'package:unreal_remote_control/controls/model/preset_group.dart';
 
 part 'preset.freezed.dart';
 part 'preset.g.dart';

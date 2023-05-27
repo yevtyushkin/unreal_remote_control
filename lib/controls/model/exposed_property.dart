@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/owner_object.dart';
-import 'package:unreal_remote_control/model/underlying_property.dart';
+import 'package:unreal_remote_control/controls/model/owner_object.dart';
+import 'package:unreal_remote_control/controls/model/underlying_property.dart';
 
 part 'exposed_property.freezed.dart';
 part 'exposed_property.g.dart';
@@ -15,6 +15,5 @@ class ExposedProperty with _$ExposedProperty {
     @Default([]) List<OwnerObject> ownerObjects,
   }) = _ExposedProperty;
 
-  factory ExposedProperty.fromJson(Map<String, dynamic> json) =>
-      _$ExposedPropertyFromJson(json);
+  factory ExposedProperty.fromJson(Map<String, dynamic> json) => _$ExposedPropertyFromJson(json);
 }

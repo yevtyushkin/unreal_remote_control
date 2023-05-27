@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/exposed_function.dart';
-import 'package:unreal_remote_control/model/exposed_property.dart';
+import 'package:unreal_remote_control/controls/model/exposed_function.dart';
+import 'package:unreal_remote_control/controls/model/exposed_property.dart';
 
 part 'selected_preset_group_field.freezed.dart';
 

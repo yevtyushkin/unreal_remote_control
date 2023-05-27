@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/underlying_function_argument.dart';
+import 'package:unreal_remote_control/controls/model/underlying_function_argument.dart';
 
 part 'underlying_function.freezed.dart';
 part 'underlying_function.g.dart';

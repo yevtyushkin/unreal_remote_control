@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/state/remote_control.dart';
-import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
-import 'package:unreal_remote_control/ui/preset_group_field_overview.dart';
-import 'package:unreal_remote_control/ui/preset_group_tile.dart';
+import 'package:unreal_remote_control/controls/state/remote_control.dart';
+import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/controls/ui/preset_group_field_overview.dart';
+import 'package:unreal_remote_control/controls/ui/preset_group_tile.dart';
 
 class PresetOverview extends StatelessWidget {
   const PresetOverview({Key? key}) : super(key: key);

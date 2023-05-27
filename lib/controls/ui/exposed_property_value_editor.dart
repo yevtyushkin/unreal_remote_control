@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/state/remote_control.dart';
-import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/controls/state/remote_control.dart';
+import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
 
 const _encoder = JsonEncoder.withIndent('      ');
 

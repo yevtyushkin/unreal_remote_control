@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/state/remote_control.dart';
+import 'package:unreal_remote_control/controls/state/remote_control.dart';
 
 class PresetEntrySelectionDropdown extends StatelessWidget {
   const PresetEntrySelectionDropdown({Key? key}) : super(key: key);
@@ -8,8 +8,7 @@ class PresetEntrySelectionDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (presets, selected) = context.select(
-      (RemoteControl rc) =>
-          (rc.state.presetEntries, rc.state.selectedPresetEntry),
+      (RemoteControl rc) => (rc.state.presetEntries, rc.state.selectedPresetEntry),
     );
 
     return DropdownButton(

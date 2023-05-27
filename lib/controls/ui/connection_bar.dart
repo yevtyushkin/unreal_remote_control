@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/state/connection_status.dart';
-import 'package:unreal_remote_control/state/remote_control.dart';
+import 'package:unreal_remote_control/controls/state/connection_status.dart';
+import 'package:unreal_remote_control/controls/state/remote_control.dart';
 
 class ConnectionBar extends StatelessWidget {
   const ConnectionBar({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:unreal_remote_control/util/log.dart';
+import 'package:unreal_remote_control/common/log.dart';
 import 'package:uuid/uuid.dart';
 
 class Timers {

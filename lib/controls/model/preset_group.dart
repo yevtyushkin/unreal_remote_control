@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/exposed_function.dart';
-import 'package:unreal_remote_control/model/exposed_property.dart';
+import 'package:unreal_remote_control/controls/model/exposed_function.dart';
+import 'package:unreal_remote_control/controls/model/exposed_property.dart';
 
 part 'preset_group.freezed.dart';
 part 'preset_group.g.dart';

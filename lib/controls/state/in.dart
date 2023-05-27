@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/model/exposed_property.dart';
-import 'package:unreal_remote_control/model/preset.dart';
-import 'package:unreal_remote_control/model/preset_entry.dart';
-import 'package:unreal_remote_control/model/property_value.dart';
+import 'package:unreal_remote_control/controls/model/exposed_property.dart';
+import 'package:unreal_remote_control/controls/model/preset.dart';
+import 'package:unreal_remote_control/controls/model/preset_entry.dart';
+import 'package:unreal_remote_control/controls/model/property_value.dart';
 
 part 'in.freezed.dart'; // TODO:
 part 'in.g.dart';
