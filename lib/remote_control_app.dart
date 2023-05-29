@@ -18,7 +18,7 @@ class RemoteControlApp extends StatelessWidget {
           ChangeNotifierProvider(
             lazy: false,
             create: (_) => ProjectsNotifier(
-              const ProjectsRepository(),
+              ProjectsRepository(),
             ),
           ),
           ChangeNotifierProxyProvider<ProjectsNotifier, RemoteControl>(

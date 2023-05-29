@@ -7,6 +7,6 @@ part 'projects_state.freezed.dart';
 class ProjectsState with _$ProjectsState {
   const factory ProjectsState({
     @Default([]) List<Project> allProjects,
-    @Default([]) List<Project> selectedProjects,
+    Project? selectedProject,
   }) = _ProjectsState;
 }

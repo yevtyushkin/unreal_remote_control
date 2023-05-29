@@ -10,6 +10,7 @@ class Project with _$Project {
   const factory Project({
     @HiveField(0) required String id,
     @HiveField(1) required String name,
+    @HiveField(2) required DateTime createdAt,
   }) = _Project;
 
   factory Project.fromJson(Map<String, dynamic> json) => _$ProjectFromJson(json);

@@ -25,7 +25,7 @@ class _CreateNewProjectButtonState extends State<CreateNewProjectButton> {
           suffix: _error == null
               ? FilledButton(
                   onPressed: _createProject,
-                  child: const Text(Strings.save),
+                  child: const Text(Strings.create),
                 )
               : Tooltip(
                   message: _error,

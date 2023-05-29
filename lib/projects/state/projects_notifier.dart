@@ -11,24 +11,27 @@ class ProjectsNotifier extends ChangeNotifier {
 
   final ProjectsRepository _repository;
 
-  final Uuid _uuid = Uuid();
+  final Uuid _uuid = const Uuid();
 
-  ProjectsState _state = ProjectsState();
+  ProjectsState _state = const ProjectsState();
 
   ProjectsState get state => _state;
 
   bool get projectSelected => false;
 
   Future<void> _loadProjects() async {
-    final allProjects = await _repository.allProjects();
+    final allProjects = await _repository.allProjects()
+      ..sort((first, second) => first.createdAt.compareTo(second.createdAt));
+    final selectedProject = await _repository.selectedProject();
     _state = _state.copyWith(
       allProjects: allProjects,
+      selectedProject: selectedProject,
     );
     notifyListeners();
   }
 
   Future<void> createProject(String name) async {
-    final project = Project(id: _uuid.v4(), name: name);
+    final project = Project(id: _uuid.v4(), name: name, createdAt: DateTime.now());
     _repository.addProject(project);
     _state = _state.copyWith(
       allProjects: [..._state.allProjects, project],
@@ -37,9 +40,36 @@ class ProjectsNotifier extends ChangeNotifier {
   }
 
   Future<void> deleteProject(Project project) async {
+    await _repository.deleteProject(project);
     _state = _state.copyWith(
       allProjects: _state.allProjects.where((p) => p.id != project.id).toList(),
-      selectedProjects: _state.selectedProjects.where((p) => p.id != project.id).toList(),
+    );
+
+    if (_state.selectedProject == project) {
+      await _clearSelectedProjectWithoutNotifying();
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> toggleSelectedProject(Project project) async {
+    final selectedProject = _state.selectedProject;
+    await _clearSelectedProjectWithoutNotifying();
+
+    if (project != selectedProject) {
+      await _repository.addSelectedProject(project);
+      _state = _state.copyWith(
+        selectedProject: project,
+      );
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> _clearSelectedProjectWithoutNotifying() async {
+    await _repository.clearSelectedProject();
+    _state = _state.copyWith(
+      selectedProject: null,
     );
   }
 }
