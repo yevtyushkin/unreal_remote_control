@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/controls/state/remote_control.dart';
+import 'package:unreal_remote_control/projects/repository/projects_repository.dart';
 import 'package:unreal_remote_control/projects/state/projects_notifier.dart';
 import 'package:unreal_remote_control/remote_control_app_body.dart';
 
@@ -15,7 +16,10 @@ class RemoteControlApp extends StatelessWidget {
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => ProjectsNotifier(),
+            lazy: false,
+            create: (_) => ProjectsNotifier(
+              const ProjectsRepository(),
+            ),
           ),
           ChangeNotifierProxyProvider<ProjectsNotifier, RemoteControl>(
             lazy: false,
