@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/projects/state/projects_notifier.dart';
 import 'package:unreal_remote_control/projects/ui/create_new_project_button.dart';
 import 'package:unreal_remote_control/projects/ui/delete_project_dialog.dart';
+import 'package:unreal_remote_control/projects/ui/project_page.dart';
 import 'package:unreal_remote_control/strings.dart';
 
 class ProjectsPage extends StatelessWidget {
@@ -10,8 +11,8 @@ class ProjectsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (allProjects, selectedProject) = context.select(
-      (ProjectsNotifier notifier) => (notifier.state.allProjects, notifier.state.selectedProject),
+    final allProjects = context.select(
+      (ProjectsNotifier notifier) => notifier.state.allProjects,
     );
 
     return ScaffoldPage(
@@ -31,17 +32,24 @@ class ProjectsPage extends StatelessWidget {
         children: [
           ...allProjects.map(
             (project) => HoverButton(
-              onPressed: () => context.read<ProjectsNotifier>().toggleSelectedProject(project),
+              onPressed: () {
+                final rc = context.read<ProjectsNotifier>();
+                rc.selectProject(project);
+                Navigator.of(context, rootNavigator: true).push(
+                  FluentPageRoute(
+                    builder: (_) => ChangeNotifierProvider.value(
+                      value: rc,
+                      child: const ProjectPage(),
+                    ),
+                  ),
+                );
+              },
               builder: (context, state) {
                 final isHovered = state.contains(ButtonStates.hovering);
                 return Stack(
                   children: [
                     Card(
-                      borderColor: selectedProject == project
-                          ? FluentTheme.of(context).accentColor
-                          : isHovered
-                              ? Colors.grey[90]
-                              : null,
+                      borderColor: isHovered ? Colors.grey[90] : null,
                       child: Center(
                         child: Text(project.name),
                       ),

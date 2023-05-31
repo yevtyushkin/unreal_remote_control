@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/common/ui/toggleable_tooltip.dart';
-import 'package:unreal_remote_control/projects/projects_page.dart';
 import 'package:unreal_remote_control/projects/state/projects_notifier.dart';
+import 'package:unreal_remote_control/projects/ui/projects_page.dart';
 import 'package:unreal_remote_control/strings.dart';
 
 class RemoteControlAppBody extends StatefulWidget {

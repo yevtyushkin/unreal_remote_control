@@ -10,28 +10,47 @@ class RemoteControlApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
-      debugShowCheckedModeBanner: false,
-      theme: FluentThemeData.dark(),
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            lazy: false,
-            create: (_) => ProjectsNotifier(
-              ProjectsRepository(),
-            ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (_) => ProjectsNotifier(
+            ProjectsRepository(),
           ),
-          ChangeNotifierProxyProvider<ProjectsNotifier, RemoteControl>(
-            lazy: false,
-            create: (_) => RemoteControl(),
-            update: (context, value, maybeRemoteControl) {
-              if (maybeRemoteControl == null) return RemoteControl();
+        ),
+        ChangeNotifierProxyProvider<ProjectsNotifier, RemoteControl>(
+          lazy: false,
+          create: (_) => RemoteControl(),
+          update: (context, value, maybeRemoteControl) {
+            if (maybeRemoteControl == null) return RemoteControl();
 
-              return maybeRemoteControl;
-            },
-          )
-        ],
-        child: const RemoteControlAppBody(),
+            return maybeRemoteControl;
+          },
+        )
+      ],
+      child: FluentApp(
+        debugShowCheckedModeBanner: false,
+        theme: FluentThemeData.dark(),
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              lazy: false,
+              create: (_) => ProjectsNotifier(
+                ProjectsRepository(),
+              ),
+            ),
+            ChangeNotifierProxyProvider<ProjectsNotifier, RemoteControl>(
+              lazy: false,
+              create: (_) => RemoteControl(),
+              update: (context, value, maybeRemoteControl) {
+                if (maybeRemoteControl == null) return RemoteControl();
+
+                return maybeRemoteControl;
+              },
+            )
+          ],
+          child: const RemoteControlAppBody(),
+        ),
       ),
     );
   }
