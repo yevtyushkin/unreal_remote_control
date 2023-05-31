@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/state/remote_control.dart';
+import 'package:unreal_remote_control/controls/state/remote_control.dart';
 
 class ExposedPropertyButtonBar extends StatelessWidget {
   const ExposedPropertyButtonBar({Key? key, required this.onApply, required this.applyEnabled}) : super(key: key);
