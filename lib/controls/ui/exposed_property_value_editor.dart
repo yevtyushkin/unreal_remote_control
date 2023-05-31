@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/controls/state/remote_control.dart';
 import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/ui/exposed_property_button_bar.dart';
 
 const _encoder = JsonEncoder.withIndent('      ');
 
@@ -54,18 +55,9 @@ class _ExposedPropertyValueEditorState extends State<ExposedPropertyValueEditor>
         ),
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
-          child: TextButton.icon(
-            onPressed: _remoteControl.refreshPropertyValue,
-            icon: const Icon(Icons.refresh, color: Colors.blue),
-            label: const Text('Restore actual value'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: TextButton.icon(
-            onPressed: _valueError == null ? () => _remoteControl.applyPropertyValue(_controller.text) : null,
-            icon: Icon(Icons.send, color: _valueError == null ? Colors.green : Colors.grey),
-            label: const Text('Apply new value'),
+          child: ExposedPropertyButtonBar(
+            applyEnabled: _valueError == null,
+            onApply: () => _remoteControl.applyPropertyValue(_controller.text),
           ),
         ),
       ],

@@ -6,6 +6,11 @@ import 'package:unreal_remote_control/controls/state/remote_control.dart';
 import 'package:unreal_remote_control/controls/state/selected_preset_group_field.dart';
 import 'package:unreal_remote_control/controls/ui/exposed_function_overview.dart';
 import 'package:unreal_remote_control/controls/ui/exposed_property_value_editor.dart';
+import 'package:unreal_remote_control/state/remote_control.dart';
+import 'package:unreal_remote_control/state/selected_preset_group_field.dart';
+import 'package:unreal_remote_control/ui/exposed_function_overview.dart';
+import 'package:unreal_remote_control/ui/exposed_property_color_editor.dart';
+import 'package:unreal_remote_control/ui/exposed_property_value_editor.dart';
 
 const _encoder = JsonEncoder.withIndent('   ');
 
@@ -69,7 +74,11 @@ class PresetGroupFieldOverview extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),
-          child: selected is SelectedProperty ? const ExposedPropertyValueEditor() : const ExposedFunctionOverview(),
+          child: selected is SelectedProperty
+              ? (selected.property.underlyingProperty.type == 'FColor'
+                  ? const ExposedPropertyColorEditor()
+                  : const ExposedPropertyValueEditor())
+              : const ExposedFunctionOverview(),
         )
       ],
     );
