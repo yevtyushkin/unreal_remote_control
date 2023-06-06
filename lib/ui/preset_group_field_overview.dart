@@ -71,7 +71,7 @@ class PresetGroupFieldOverview extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: selected is SelectedProperty
-              ? (selected.property.underlyingProperty.type == 'FColor'
+              ? (const {'FColor', 'FLinearColor'}.contains(selected.property.underlyingProperty.type)
                   ? const ExposedPropertyColorEditor()
                   : const ExposedPropertyValueEditor())
               : const ExposedFunctionOverview(),

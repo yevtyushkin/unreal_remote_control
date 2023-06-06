@@ -57,6 +57,7 @@ class _ExposedPropertyValueEditorState extends State<ExposedPropertyValueEditor>
           padding: const EdgeInsets.only(top: 4.0),
           child: ExposedPropertyButtonBar(
             applyEnabled: _valueError == null,
+            onReset: () => _currentValue = null,
             onApply: () => _remoteControl.applyPropertyValue(_controller.text),
           ),
         ),

@@ -17,7 +17,7 @@ class ExposedPropertyColorEditor extends StatefulWidget {
 
 class _ExposedPropertyColorEditorState extends State<ExposedPropertyColorEditor> {
   late final RemoteControl _rc;
-  dynamic _cachedValue;
+  SelectedProperty? _cachedValue;
   Color _color = Colors.white;
   final TextEditingController _r = TextEditingController();
   final TextEditingController _rD = TextEditingController();
@@ -186,12 +186,8 @@ class _ExposedPropertyColorEditorState extends State<ExposedPropertyColorEditor>
           ],
         ),
         ExposedPropertyButtonBar(
-          onApply: () => _rc.applyPropertyValue(jsonEncode({
-            'R': _color.red,
-            'G': _color.green,
-            'B': _color.blue,
-            'A': _color.alpha,
-          })),
+          onApply: _applyColor,
+          onReset: () => _cachedValue = null,
           applyEnabled: true,
         ),
       ],
@@ -203,15 +199,38 @@ class _ExposedPropertyColorEditorState extends State<ExposedPropertyColorEditor>
     setState(() {});
   }
 
+  void _applyColor() {
+    final value = _cachedValue?.property.underlyingProperty.type == 'FColor'
+        ? {
+            'R': _color.red,
+            'G': _color.green,
+            'B': _color.blue,
+            'A': _color.alpha,
+          }
+        : {
+            'R': _color.red.toDouble() / 255,
+            'G': _color.green.toDouble() / 255,
+            'B': _color.blue.toDouble() / 255,
+            'A': _color.alpha.toDouble() / 255,
+          };
+
+    _rc.applyPropertyValue(jsonEncode(value));
+  }
+
   void _updateSelectedPropertyColor() {
     final selectedField = _rc.state.selectedPresetGroupField;
-    if (selectedField is SelectedProperty && selectedField.property.underlyingProperty.type == 'FColor') {
-      if (_cachedValue != selectedField.value) {
-        switch (selectedField.value) {
-          case {'R': int r, 'G': int g, 'B': int b, 'A': int a}:
+    if (selectedField is SelectedProperty) {
+      if (_cachedValue != selectedField) {
+        switch ((selectedField.value, selectedField.property.underlyingProperty.type)) {
+          case ({'R': int r, 'G': int g, 'B': int b, 'A': int a}, 'FColor'):
             _updateColor(Color.fromARGB(a, r, g, b));
-            _cachedValue = selectedField.value;
+            _cachedValue = selectedField;
+          case ({'R': num r, 'G': num g, 'B': num b, 'A': num a}, 'FLinearColor'):
+            _updateColor(Color.fromARGB((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt()));
+            _cachedValue = selectedField;
           case _:
+            print(selectedField.value);
+            print(selectedField.value.runtimeType);
         }
       }
     }

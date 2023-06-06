@@ -3,9 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:unreal_remote_control/state/remote_control.dart';
 
 class ExposedPropertyButtonBar extends StatelessWidget {
-  const ExposedPropertyButtonBar({Key? key, required this.onApply, required this.applyEnabled}) : super(key: key);
+  const ExposedPropertyButtonBar({
+    Key? key,
+    required this.onApply,
+    required this.onReset,
+    required this.applyEnabled,
+  }) : super(key: key);
 
   final VoidCallback onApply;
+  final VoidCallback onReset;
   final bool applyEnabled;
 
   @override
@@ -14,7 +20,10 @@ class ExposedPropertyButtonBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextButton.icon(
-          onPressed: context.read<RemoteControl>().refreshPropertyValue,
+          onPressed: () {
+            onReset();
+            context.read<RemoteControl>().refreshPropertyValue();
+          },
           icon: const Icon(Icons.refresh, color: Colors.blue),
           label: const Text('Restore actual value'),
         ),
