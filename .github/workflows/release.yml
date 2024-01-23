@@ -59,7 +59,7 @@ jobs:
         with:
           type: 'zip'
           filename: Unreal-Remote-Control-UI-windows.zip
-          directory: build/windows/runner/Release
+          directory: build/windows/x64/runner/Release
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v2
