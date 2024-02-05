@@ -1,7 +1,8 @@
-include: package:flutter_lints/flutter.yaml
+include: package:solid_lints/analysis_options.yaml
 
 linter:
   rules:
+    - prefer_single_quotes
 
 analyzer:
   errors:

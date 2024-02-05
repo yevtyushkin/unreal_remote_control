@@ -1,25 +1,16 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:unreal_remote_control/projects/model/project.dart';
+import 'package:unreal_remote_control/common/repository/hive_repository.dart';
+import 'package:unreal_remote_control/common/repository/immediate_hive_box_compaction.dart';
+import 'package:unreal_remote_control/projects/domain/project.dart';
 
-class ProjectsRepository {
+/// A repository that provides an ability to add, delete, edit projects.
+class ProjectsRepository with HiveRepository<Project> {
+  @override
+  final Future<Box<Project>> box = Hive.openBox<Project>(
+    'projects',
+    compactionStrategy: immediateHiveBoxCompaction,
+  );
+
+  /// Returns a new instance of the [ProjectsRepository].
   ProjectsRepository();
-
-  final _projectsBox = Hive.openBox<Project>('projects', compactionStrategy: _immediateCompaction);
-
-  static bool _immediateCompaction(int entries, int deleted) => deleted >= 1;
-
-  Future<List<Project>> allProjects() async {
-    final box = await _projectsBox;
-    return box.values.toList();
-  }
-
-  Future<void> addProject(Project project) async {
-    final box = await _projectsBox;
-    await box.put(project.id, project);
-  }
-
-  Future<void> deleteProject(Project project) async {
-    final box = await _projectsBox;
-    await box.delete(project.id);
-  }
 }

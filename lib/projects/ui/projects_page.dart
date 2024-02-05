@@ -1,79 +1,24 @@
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:provider/provider.dart';
-import 'package:unreal_remote_control/projects/state/projects_notifier.dart';
-import 'package:unreal_remote_control/projects/ui/create_new_project_button.dart';
-import 'package:unreal_remote_control/projects/ui/delete_project_dialog.dart';
-import 'package:unreal_remote_control/projects/ui/project_page.dart';
-import 'package:unreal_remote_control/strings.dart';
+import 'package:flutter/material.dart';
+import 'package:unreal_remote_control/projects/ui/projects_page_actions.dart';
+import 'package:unreal_remote_control/projects/ui/projects_page_project_cards.dart';
 
+/// A widget that displays the projects page.
 class ProjectsPage extends StatelessWidget {
-  const ProjectsPage({Key? key}) : super(key: key);
+  /// Returns a new instance of the [ProjectsPage].
+  const ProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final allProjects = context.select(
-      (ProjectsNotifier notifier) => notifier.state.allProjects,
-    );
-
-    return ScaffoldPage(
-      header: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 52.0),
-        child: PageHeader(
-          title: Text(Strings.selectProject, style: FluentTheme.of(context).typography.subtitle),
-          commandBar: const CreateNewProjectButton(),
-        ),
-      ),
-      content: GridView.count(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
-        crossAxisCount: 3,
-        childAspectRatio: 2,
-        mainAxisSpacing: 32,
-        crossAxisSpacing: 32,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
         children: [
-          ...allProjects.map(
-            (project) => HoverButton(
-              onPressed: () {
-                final rc = context.read<ProjectsNotifier>();
-                rc.selectProject(project);
-                Navigator.of(context, rootNavigator: true).push(
-                  FluentPageRoute(
-                    builder: (_) => ChangeNotifierProvider.value(
-                      value: rc,
-                      child: const ProjectPage(),
-                    ),
-                  ),
-                );
-              },
-              builder: (context, state) {
-                final isHovered = state.contains(ButtonStates.hovering);
-                return Stack(
-                  children: [
-                    Card(
-                      borderColor: isHovered ? Colors.grey[90] : null,
-                      child: Center(
-                        child: Text(project.name),
-                      ),
-                    ),
-                    if (isHovered)
-                      Positioned(
-                        top: 4,
-                        right: 4,
-                        child: IconButton(
-                          icon: const Icon(FluentIcons.delete),
-                          onPressed: () => showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (dialogContext) => ChangeNotifierProvider.value(
-                              value: context.read<ProjectsNotifier>(),
-                              child: DeleteProjectDialog(project: project),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
+          ConstrainedBox(
+            constraints: const BoxConstraints.tightFor(height: 48.0),
+            child: const ProjectsPageActions(),
+          ),
+          const Expanded(
+            child: ProjectsPageProjectCards(),
           ),
         ],
       ),
