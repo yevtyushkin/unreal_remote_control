@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unreal_remote_control/projects/domain/project.dart';
 import 'package:unreal_remote_control/projects/ui/projects_page_delete_project_dialog.dart';
 import 'package:unreal_remote_control/projects/ui/projects_page_project_dialog.dart';
+import 'package:unreal_remote_control/providers.dart';
+import 'package:unreal_remote_control/router.dart';
 
 /// A widget that displays the given [project] as a [Card].
 class ProjectsPageProjectCard extends HookConsumerWidget {
@@ -23,7 +26,7 @@ class ProjectsPageProjectCard extends HookConsumerWidget {
 
     return InkWell(
       onHover: (newHoverValue) => isHovered.value = newHoverValue,
-      onTap: _selectProject,
+      onTap: () => _selectProject(ref, project, context),
       child: Stack(
         children: [
           DecoratedBox(
@@ -85,5 +88,9 @@ class ProjectsPageProjectCard extends HookConsumerWidget {
   }
 
   /// Selects and navigates to the given [project].
-  void _selectProject() {}
+  void _selectProject(WidgetRef ref, Project project, BuildContext context) {
+    ref.read(projectPageNotifierProvider).selectProject(project);
+
+    context.push(projectPageRoutePath);
+  }
 }

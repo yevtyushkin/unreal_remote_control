@@ -9,7 +9,7 @@ import 'package:unreal_remote_control/projects/domain/projects_page_state.dart';
 import 'package:unreal_remote_control/projects/repository/projects_repository.dart';
 import 'package:uuid/uuid.dart';
 
-/// Manages projects page state.
+/// A notifier that manages projects page state.
 class ProjectsPageNotifier extends PageStateNotifier<ProjectsPageState> {
   /// A [ProjectsRepository] this notifier uses to persist project models.
   final ProjectsRepository _projectsRepository;

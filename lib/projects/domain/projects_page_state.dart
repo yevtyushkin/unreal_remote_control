@@ -9,8 +9,8 @@ part 'projects_page_state.g.dart';
 class ProjectsPageState with _$ProjectsPageState {
   /// Returns a new instance of the [ProjectsPageState].
   const factory ProjectsPageState({
-    @Default([]) List<Project> projects,
-    @Default('') String projectSearchQuery,
+    required List<Project> projects,
+    required String projectSearchQuery,
   }) = _ProjectsPageState;
 
   /// Returns a new instance of the [ProjectsPageState] from the given [json].

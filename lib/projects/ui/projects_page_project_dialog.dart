@@ -40,7 +40,7 @@ class ProjectsPageProjectDialog extends HookConsumerWidget {
         title: Text(title),
         content: SizedBox(
           width: size.width * 0.6,
-          height: size.height * 0.25,
+          height: size.height * 0.35,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -56,6 +56,7 @@ class ProjectsPageProjectDialog extends HookConsumerWidget {
                   border: OutlineInputBorder(),
                   labelText: 'Connection URL',
                 ),
+                maxLines: 3,
                 controller: connectionUrlController,
               ),
             ],
