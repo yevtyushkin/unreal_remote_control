@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:unreal_remote_control/common/util/debouncer.dart';
 import 'package:unreal_remote_control/project/client/remote_control_http_client.dart';
 import 'package:unreal_remote_control/project/state/project_page_notifier.dart';
 import 'package:unreal_remote_control/project/state/project_page_state.dart';
@@ -13,6 +14,9 @@ final Client _httpClient = Client();
 
 /// A [Uuid] generator to use across the application.
 const Uuid _uuid = Uuid();
+
+/// A debouncer for debouncing potentially expensive functions.
+final Debouncer _debouncer = Debouncer();
 
 /// A [ChangeNotifierProvider] of [ProjectsPageNotifier].
 final projectsPageNotifierProvider = ChangeNotifierProvider((_) {
@@ -35,5 +39,5 @@ final projectPageNotifierProvider = ChangeNotifierProvider((_) {
   );
   final remoteControlHttpClient = RemoteControlHttpClient(_httpClient);
 
-  return ProjectPageNotifier(state, remoteControlHttpClient);
+  return ProjectPageNotifier(state, remoteControlHttpClient, _debouncer);
 });

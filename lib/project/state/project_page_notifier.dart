@@ -1,4 +1,5 @@
 import 'package:unreal_remote_control/common/state/page_state_notifier.dart';
+import 'package:unreal_remote_control/common/util/debouncer.dart';
 import 'package:unreal_remote_control/common/util/where_extension.dart';
 import 'package:unreal_remote_control/project/client/remote_control_http_client.dart';
 import 'package:unreal_remote_control/project/domain/preset.dart';
@@ -11,9 +12,13 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
   /// Remote Control API.
   final RemoteControlHttpClient _client;
 
+  /// A [Debouncer] for debouncing expensive UI updates in project page preset
+  /// navigation list on project page preset navigation search bar updates.
+  final Debouncer _debouncer;
+
   /// Returns a new instance of [ProjectPageNotifier] with
-  /// the given [ProjectPageState] and [RemoteControlHttpClient].
-  ProjectPageNotifier(super.state, this._client);
+  /// the given [ProjectPageState], [RemoteControlHttpClient] and [Debouncer].
+  ProjectPageNotifier(super.state, this._client, this._debouncer);
 
   /// Sets the selected project to the given [project].
   Future<void> selectProject(Project project) async {

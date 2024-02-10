@@ -44,7 +44,7 @@ class ProjectPageAppBar extends ConsumerWidget {
         ProjectPagePresetSelectionDropdown(),
       ],
       centerTitle: false,
-      elevation: 8.0,
+      elevation: 1,
       shadowColor: Colors.black,
     );
   }
