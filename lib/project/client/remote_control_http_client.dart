@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:unreal_remote_control/project/client/response/get_preset_response.dart';
 import 'package:unreal_remote_control/project/client/response/get_presets_response.dart';
 
 /// A client for interacting with Unreal Engine Remote Control (https://docs.unrealengine.com/4.26/en-US/ProductionPipelines/ScriptingAndAutomation/WebControl/).
@@ -19,6 +20,16 @@ class RemoteControlHttpClient {
       baseUrl,
       '/remote/presets',
       GetPresetsResponse.fromJson,
+    );
+  }
+
+  /// Fetches full preset information using the /remote/presets/:presetName endpoint
+  /// of the Remote Control API.
+  Future<GetPresetResponse> getPreset(String baseUrl, String name) async {
+    return _getAndParse(
+      baseUrl,
+      '/remote/preset/$name',
+      GetPresetResponse.fromJson,
     );
   }
 

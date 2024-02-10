@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:unreal_remote_control/project/domain/preset_information.dart';
+import 'package:unreal_remote_control/project/domain/preset.dart';
 
 part 'get_presets_response.freezed.dart';
 part 'get_presets_response.g.dart';
@@ -10,7 +10,7 @@ class GetPresetsResponse with _$GetPresetsResponse {
   /// Returns a new instance of the [GetPresetsResponse] with the given
   /// [presets].
   const factory GetPresetsResponse({
-    required List<PresetInformation> presets,
+    required List<Preset> presets,
   }) = _GetPresetsResponse;
 
   /// Returns a new instance of the [GetPresetsResponse] from the

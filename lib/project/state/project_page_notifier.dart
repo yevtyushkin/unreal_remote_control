@@ -1,6 +1,7 @@
 import 'package:unreal_remote_control/common/state/page_state_notifier.dart';
+import 'package:unreal_remote_control/common/util/where_extension.dart';
 import 'package:unreal_remote_control/project/client/remote_control_http_client.dart';
-import 'package:unreal_remote_control/project/domain/preset_information.dart';
+import 'package:unreal_remote_control/project/domain/preset.dart';
 import 'package:unreal_remote_control/project/state/project_page_state.dart';
 import 'package:unreal_remote_control/projects/domain/project.dart';
 
@@ -17,7 +18,7 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
   /// Sets the selected project to the given [project].
   Future<void> selectProject(Project project) async {
     final connectionUrl = project.connectionUrl;
-    List<PresetInformation> presets = [];
+    List<Preset> presets = [];
     bool problematicConnectionUrl = false;
     if (connectionUrl != null) {
       try {
@@ -39,12 +40,42 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
     );
   }
 
-  /// Sets the selected preset to the given [preset].
-  void selectPreset(PresetInformation? preset) {
-    updateState(
-      (state) => state.copyWith(
-        selectedPreset: preset,
-      ),
-    );
+  /// Fetches full preset information that has the given [preset]'s name and
+  /// updates all associated information to it.
+  Future<void> selectPreset(Preset? preset) async {
+    if (preset == null) {
+      updateState(
+        (state) => state.copyWith(
+          selectedPreset: null,
+        ),
+      );
+
+      return;
+    }
+
+    final connectionUrl = state.selectedProject?.connectionUrl;
+    if (connectionUrl != null) {
+      try {
+        final getPresetResponse = await _client.getPreset(
+          connectionUrl,
+          preset.name,
+        );
+        final updatedPreset = getPresetResponse.preset;
+
+        final updatedPresets = state.presets
+            .setWhere(
+              (preset) => preset.id == updatedPreset.id,
+              updatedPreset,
+            )
+            .toList();
+
+        updateState(
+          (state) => state.copyWith(
+            presets: updatedPresets,
+            selectedPreset: updatedPreset,
+          ),
+        );
+      } catch (_) {}
+    }
   }
 }

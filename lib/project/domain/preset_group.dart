@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:unreal_remote_control/project/domain/exposed_function.dart';
+import 'package:unreal_remote_control/project/domain/exposed_property.dart';
 
 part 'preset_group.freezed.dart';
 part 'preset_group.g.dart';
@@ -6,9 +8,12 @@ part 'preset_group.g.dart';
 /// A model that represents a remote preset group.
 @freezed
 class PresetGroup with _$PresetGroup {
-  /// Returns a new instance of the [PresetGroup] with the given [name].
+  /// Returns a new instance of the [PresetGroup] with the given [name],
+  /// [exposedProperties] and [exposedFunctions].
   const factory PresetGroup({
     required String name,
+    required List<ExposedProperty> exposedProperties,
+    required List<ExposedFunction> exposedFunctions,
   }) = _PresetGroup;
 
   /// Returns a new instance of the [PresetGroup] from the given [json].
