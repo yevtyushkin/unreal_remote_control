@@ -30,4 +30,12 @@ class Debouncer {
     );
     _state[key] = newDebounce;
   }
+
+  /// Cancels a debounce with the given [key].
+  void cancel(String key) {
+    final currentDebounce = _state[key];
+    currentDebounce?.cancel();
+
+    _state.remove(key);
+  }
 }

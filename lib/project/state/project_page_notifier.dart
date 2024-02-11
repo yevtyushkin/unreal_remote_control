@@ -8,6 +8,14 @@ import 'package:unreal_remote_control/projects/domain/project.dart';
 
 /// A notifier that manages project page state.
 class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
+  /// A [Duration] for debouncing expensive UI updates in project page preset
+  /// search bar.
+  static const _presetSearchDebounceDuration = Duration(milliseconds: 300);
+
+  /// A key for debouncing expensive UI updates in project page preset search
+  /// bar.
+  static const _presetSearchDebounceKey = 'presetSearchQuery';
+
   /// A [RemoteControlHttpClient] used by this notifier to interact with the
   /// Remote Control API.
   final RemoteControlHttpClient _client;
@@ -16,30 +24,53 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
   /// navigation list on project page preset navigation search bar updates.
   final Debouncer _debouncer;
 
+  /// Returns the currently selected project with the preset search query
+  /// applied.
+  Preset? get selectedPreset {
+    return state.selectedPreset?.copyWith(
+      groups: (state.selectedPreset?.groups ?? [])
+          .map((group) {
+            return group.copyWith(
+              exposedProperties: group.exposedProperties.where((property) {
+                return property.displayName
+                    .toLowerCase()
+                    .contains(state.presetSearchQuery);
+              }).toList(),
+              exposedFunctions: group.exposedFunctions.where((function) {
+                return function.displayName
+                    .toLowerCase()
+                    .contains(state.presetSearchQuery);
+              }).toList(),
+            );
+          })
+          .where(
+            (group) =>
+                group.exposedProperties.isNotEmpty ||
+                group.exposedFunctions.isNotEmpty,
+          )
+          .toList(),
+    );
+  }
+
   /// Returns a new instance of [ProjectPageNotifier] with
   /// the given [ProjectPageState], [RemoteControlHttpClient] and [Debouncer].
   ProjectPageNotifier(super.state, this._client, this._debouncer);
 
   /// Sets the selected project to the given [project].
   Future<void> selectProject(Project project) async {
-    final connectionUrl = project.connectionUrl;
     List<Preset> presets = [];
-    bool problematicConnectionUrl = false;
+
+    final connectionUrl = project.connectionUrl;
     if (connectionUrl != null) {
       try {
         presets = (await _client.getPresets(connectionUrl)).presets;
-      } catch (_) {
-        problematicConnectionUrl = true;
-      }
-    } else {
-      problematicConnectionUrl = true;
+      } catch (_) {}
     }
 
     updateState(
       (state) => state.copyWith(
         selectedProject: project,
         presets: presets,
-        problematicConnectionUrl: problematicConnectionUrl,
         selectedPreset: null,
       ),
     );
@@ -82,5 +113,32 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
         );
       } catch (_) {}
     }
+  }
+
+  /// Updates the preset search query to the given [value].
+  void updatePresetSearchQuery(String value) {
+    final trimmed = value.trim().toLowerCase();
+
+    if (trimmed.isEmpty) {
+      _debouncer.cancel(_presetSearchDebounceKey);
+
+      updateState(
+        (state) => state.copyWith(
+          presetSearchQuery: trimmed,
+        ),
+      );
+
+      return;
+    }
+
+    _debouncer.debounce(
+      _presetSearchDebounceKey,
+      _presetSearchDebounceDuration,
+      () => updateState(
+        (state) => state.copyWith(
+          presetSearchQuery: trimmed,
+        ),
+      ),
+    );
   }
 }

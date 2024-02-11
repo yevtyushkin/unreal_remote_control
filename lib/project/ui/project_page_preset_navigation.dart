@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:unreal_remote_control/project/ui/project_page_preset_navigation_preset_group_tile.dart';
 import 'package:unreal_remote_control/project/ui/project_page_preset_navigation_search_bar.dart';
 import 'package:unreal_remote_control/providers.dart';
 
@@ -12,7 +13,7 @@ class ProjectPagePresetNavigation extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPreset = ref.watch(
       projectPageNotifierProvider.select(
-        (provider) => provider.state.selectedPreset,
+        (provider) => provider.selectedPreset,
       ),
     );
 
@@ -31,17 +32,7 @@ class ProjectPagePresetNavigation extends HookConsumerWidget {
           itemBuilder: (_, i) {
             final group = selectedPreset.groups[i];
 
-            return ExpansionTile(
-              title: Text(group.name),
-              children: const [
-                ExpansionTile(
-                  title: Text('Properties'),
-                ),
-                ExpansionTile(
-                  title: Text('Functions'),
-                ),
-              ],
-            );
+            return ProjectPagePresetNavigationPresetGroupTile(group: group);
           },
         ),
       ],

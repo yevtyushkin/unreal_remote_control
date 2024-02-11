@@ -34,8 +34,8 @@ final projectPageNotifierProvider = ChangeNotifierProvider((_) {
   const state = ProjectPageState(
     selectedProject: null,
     presets: [],
-    problematicConnectionUrl: false,
     selectedPreset: null,
+    presetSearchQuery: '',
   );
   final remoteControlHttpClient = RemoteControlHttpClient(_httpClient);
 

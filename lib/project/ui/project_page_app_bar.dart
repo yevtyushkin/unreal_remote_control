@@ -16,33 +16,17 @@ class ProjectPageAppBar extends ConsumerWidget {
       ),
     );
 
-    final problematicConnectionUrl = ref.watch(
-      projectPageNotifierProvider.select(
-        (notifier) => notifier.state.problematicConnectionUrl,
-      ),
-    );
-
     return AppBar(
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(selectedProjectName),
-          if (problematicConnectionUrl)
-            const Padding(
-              padding: EdgeInsets.only(left: 4.0),
-              child: Tooltip(
-                message: 'The connection URL is either missing or incorrect',
-                child: Icon(
-                  Icons.warning,
-                  color: Colors.red,
-                ),
-              ),
-            ),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0),
+            child: ProjectPagePresetSelectionDropdown(),
+          ),
         ],
       ),
-      actions: const [
-        ProjectPagePresetSelectionDropdown(),
-      ],
       centerTitle: false,
       elevation: 1,
       shadowColor: Colors.black,

@@ -23,7 +23,11 @@ class ProjectPagePresetSelectionDropdown extends ConsumerWidget {
     );
 
     return DropdownButton<Preset>(
+      hint: const Text('Select preset...'),
       value: selectedPreset,
+      underline: const SizedBox(),
+      borderRadius: BorderRadius.circular(2.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 4.0),
       items: [
         ...presets.map(
           (preset) {
