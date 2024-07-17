@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unreal_remote_control/project/ui/project_page_app_bar.dart';
-import 'package:unreal_remote_control/project/ui/project_page_preset_split_view.dart';
+import 'package:unreal_remote_control/project/ui/project_page_preset_navigation.dart';
 
 /// A widget that displays the project page.
 class ProjectPage extends StatelessWidget {
@@ -11,10 +11,24 @@ class ProjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
+        preferredSize: Size.fromHeight(60),
         child: ProjectPageAppBar(),
       ),
-      body: ProjectPagePresetSplitView(),
+      body: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: ProjectPagePresetNavigation(),
+            ),
+          ),
+          VerticalDivider(),
+          Expanded(
+            flex: 4,
+            child: SizedBox(),
+          ),
+        ],
+      ),
     );
   }
 }

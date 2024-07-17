@@ -18,7 +18,7 @@ class ProjectsPageActionsCreateProjectButton extends StatelessWidget {
 
   /// Opens the project creation dialog.
   void _onPressed(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) => const ProjectsPageProjectDialog(
         project: null,

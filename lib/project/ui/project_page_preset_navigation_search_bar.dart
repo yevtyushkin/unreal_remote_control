@@ -10,15 +10,12 @@ class ProjectPagePresetNavigationSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SliverAppBar(
-      automaticallyImplyLeading: false,
-      floating: true,
-      flexibleSpace: TextField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (value) => _onSearchBarTextChanged(value, ref),
+    return TextField(
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.search),
       ),
+      onChanged: (value) => _onSearchBarTextChanged(value, ref),
     );
   }
 

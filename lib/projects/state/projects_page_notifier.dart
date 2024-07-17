@@ -11,6 +11,14 @@ import 'package:uuid/uuid.dart';
 
 /// A notifier that manages projects page state.
 class ProjectsPageNotifier extends PageStateNotifier<ProjectsPageState> {
+  /// Returns a new instance of the [ProjectsPageNotifier] with the given
+  /// initial [ProjectsPageState], [ProjectsRepository], and [Uuid].
+  ProjectsPageNotifier(
+    super.state,
+    this._projectsRepository,
+    this._uuid,
+  );
+
   /// A [ProjectsRepository] this notifier uses to persist project models.
   final ProjectsRepository _projectsRepository;
 
@@ -28,14 +36,6 @@ class ProjectsPageNotifier extends PageStateNotifier<ProjectsPageState> {
       ).toList(),
     );
   }
-
-  /// Returns a new instance of the [ProjectsPageNotifier] with the given
-  /// initial [ProjectsPageState], [ProjectsRepository], and [Uuid].
-  ProjectsPageNotifier(
-    super.state,
-    this._projectsRepository,
-    this._uuid,
-  );
 
   @override
   FutureOr<void> recover() async {

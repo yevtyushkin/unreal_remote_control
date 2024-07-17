@@ -5,12 +5,11 @@ import 'package:unreal_remote_control/projects/domain/project.dart';
 
 /// A repository that provides an ability to add, delete, edit projects.
 class ProjectsRepository with HiveRepository<Project> {
+  /// Returns a new instance of the [ProjectsRepository].
+  ProjectsRepository();
   @override
   final Future<Box<Project>> box = Hive.openBox<Project>(
     'projects',
     compactionStrategy: immediateHiveBoxCompaction,
   );
-
-  /// Returns a new instance of the [ProjectsRepository].
-  ProjectsRepository();
 }

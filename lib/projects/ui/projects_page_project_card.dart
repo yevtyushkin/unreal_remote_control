@@ -10,15 +10,15 @@ import 'package:unreal_remote_control/router.dart';
 
 /// A widget that displays the given [project] as a [Card].
 class ProjectsPageProjectCard extends HookConsumerWidget {
-  /// A [Project] this [Card] displays.
-  final Project project;
-
   /// Returns a new instance of the [ProjectsPageProjectCard] with the given
   /// [project].
   const ProjectsPageProjectCard({
     required this.project,
     super.key,
   });
+
+  /// A [Project] this [Card] displays.
+  final Project project;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,7 +72,7 @@ class ProjectsPageProjectCard extends HookConsumerWidget {
 
   /// Opens the [ProjectsPageProjectDialog] for editing this card's [project].
   void _editProject(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) => ProjectsPageProjectDialog(project: project),
     );
@@ -81,7 +81,7 @@ class ProjectsPageProjectCard extends HookConsumerWidget {
   /// Opens the [ProjectsPageDeleteProjectDialog] for deleting this card's
   /// [project].
   void _deleteProject(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) => ProjectsPageDeleteProjectDialog(project: project),
     );

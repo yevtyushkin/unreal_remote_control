@@ -6,14 +6,14 @@ import 'package:unreal_remote_control/providers.dart';
 
 /// A widget that displays the delete project dialog.
 class ProjectsPageDeleteProjectDialog extends ConsumerWidget {
-  /// A project ID
-  final Project project;
-
   /// Returns a new instance of the [ProjectsPageDeleteProjectDialog].
   const ProjectsPageDeleteProjectDialog({
     required this.project,
     super.key,
   });
+
+  /// A project ID
+  final Project project;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

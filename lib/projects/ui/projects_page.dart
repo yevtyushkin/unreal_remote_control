@@ -10,11 +10,11 @@ class ProjectsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(height: 48.0),
+            constraints: const BoxConstraints.tightFor(height: 48),
             child: const ProjectsPageActions(),
           ),
           const Expanded(

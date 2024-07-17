@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:unreal_remote_control/common/state/page_state_notifier.dart';
 import 'package:unreal_remote_control/common/util/debouncer.dart';
 import 'package:unreal_remote_control/common/util/where_extension.dart';
@@ -8,6 +10,10 @@ import 'package:unreal_remote_control/projects/domain/project.dart';
 
 /// A notifier that manages project page state.
 class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
+  /// Returns a new instance of [ProjectPageNotifier] with
+  /// the given [ProjectPageState], [RemoteControlHttpClient] and [Debouncer].
+  ProjectPageNotifier(super.state, this._client, this._debouncer);
+
   /// A [Duration] for debouncing expensive UI updates in project page preset
   /// search bar.
   static const _presetSearchDebounceDuration = Duration(milliseconds: 300);
@@ -52,19 +58,17 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
     );
   }
 
-  /// Returns a new instance of [ProjectPageNotifier] with
-  /// the given [ProjectPageState], [RemoteControlHttpClient] and [Debouncer].
-  ProjectPageNotifier(super.state, this._client, this._debouncer);
-
   /// Sets the selected project to the given [project].
   Future<void> selectProject(Project project) async {
-    List<Preset> presets = [];
+    var presets = <Preset>[];
 
     final connectionUrl = project.connectionUrl;
     if (connectionUrl != null) {
       try {
         presets = (await _client.getPresets(connectionUrl)).presets;
-      } catch (_) {}
+      } catch (e) {
+        log(e.toString());
+      }
     }
 
     updateState(
@@ -111,7 +115,10 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
             selectedPreset: updatedPreset,
           ),
         );
-      } catch (_) {}
+      } catch (e, stacktrace) {
+        log(stacktrace.toString());
+        rethrow;
+      }
     }
   }
 

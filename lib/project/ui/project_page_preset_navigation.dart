@@ -17,24 +17,25 @@ class ProjectPagePresetNavigation extends HookConsumerWidget {
       ),
     );
 
-    if (selectedPreset == null) {
-      return const SizedBox();
-    }
-
-    return CustomScrollView(
-      slivers: [
-        const SliverPadding(
-          padding: EdgeInsets.only(bottom: 12.0),
-          sliver: ProjectPagePresetNavigationSearchBar(),
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8),
+          child: ProjectPagePresetNavigationSearchBar(),
         ),
-        SliverList.builder(
-          itemCount: selectedPreset.groups.length,
-          itemBuilder: (_, i) {
-            final group = selectedPreset.groups[i];
+        if (selectedPreset == null)
+          const SizedBox()
+        else
+          Expanded(
+            child: ListView.builder(
+              itemCount: selectedPreset.groups.length,
+              itemBuilder: (_, i) {
+                final group = selectedPreset.groups[i];
 
-            return ProjectPagePresetNavigationPresetGroupTile(group: group);
-          },
-        ),
+                return ProjectPagePresetNavigationPresetGroupTile(group: group);
+              },
+            ),
+          ),
       ],
     );
   }

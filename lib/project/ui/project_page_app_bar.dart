@@ -21,8 +21,9 @@ class ProjectPageAppBar extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(selectedProjectName),
+          const Spacer(),
           const Padding(
-            padding: EdgeInsets.only(left: 16.0),
+            padding: EdgeInsets.only(right: 16),
             child: ProjectPagePresetSelectionDropdown(),
           ),
         ],

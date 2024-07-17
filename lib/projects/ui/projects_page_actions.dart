@@ -15,7 +15,7 @@ class ProjectsPageActions extends StatelessWidget {
       children: [
         ProjectsPageActionsCreateProjectButton(),
         SizedBox(
-          width: 12.0,
+          width: 12,
         ),
         Expanded(
           child: ProjectsPageActionsSearchBar(),

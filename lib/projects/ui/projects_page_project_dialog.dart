@@ -8,15 +8,15 @@ import 'package:unreal_remote_control/providers.dart';
 
 /// A widget that displays the edit/create project dialog.
 class ProjectsPageProjectDialog extends HookConsumerWidget {
-  /// An optional [Project] if this is an editing dialog.
-  final Project? project;
-
   /// Returns a new instance of [ProjectsPageProjectDialog] with the given
   /// [project].
   const ProjectsPageProjectDialog({
     required this.project,
     super.key,
   });
+
+  /// An optional [Project] if this is an editing dialog.
+  final Project? project;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

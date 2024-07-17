@@ -6,12 +6,12 @@ import 'package:unreal_remote_control/project/client/response/get_presets_respon
 
 /// A client for interacting with Unreal Engine Remote Control (https://docs.unrealengine.com/4.26/en-US/ProductionPipelines/ScriptingAndAutomation/WebControl/).
 class RemoteControlHttpClient {
-  /// An Http [Client] used by this client.
-  final Client _client;
-
   /// Returns a new instance of the [RemoteControlHttpClient] with the given
   /// [Client].
   const RemoteControlHttpClient(this._client);
+
+  /// An Http [Client] used by this client.
+  final Client _client;
 
   /// Fetches the available remote presets using the /remote/presets endpoint
   /// of the Remote Control API.
