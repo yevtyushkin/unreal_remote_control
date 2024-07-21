@@ -36,6 +36,7 @@ final projectPageNotifierProvider = ChangeNotifierProvider((_) {
     presets: [],
     selectedPreset: null,
     presetSearchQuery: '',
+    selectedProperty: null,
   );
   final remoteControlHttpClient = RemoteControlHttpClient(_httpClient);
 

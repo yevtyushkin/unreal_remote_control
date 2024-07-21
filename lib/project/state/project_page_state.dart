@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:unreal_remote_control/project/domain/preset.dart';
+import 'package:unreal_remote_control/project/state/project_page_selected_property.dart';
 import 'package:unreal_remote_control/projects/domain/project.dart';
 
 part 'project_page_state.freezed.dart';
@@ -15,5 +16,6 @@ class ProjectPageState with _$ProjectPageState {
     required List<Preset> presets,
     required Preset? selectedPreset,
     required String presetSearchQuery,
+    required ProjectPageSelectedProperty? selectedProperty,
   }) = _ProjectPageState;
 }

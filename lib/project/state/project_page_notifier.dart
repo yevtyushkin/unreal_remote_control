@@ -4,6 +4,7 @@ import 'package:unreal_remote_control/common/state/page_state_notifier.dart';
 import 'package:unreal_remote_control/common/util/debouncer.dart';
 import 'package:unreal_remote_control/common/util/where_extension.dart';
 import 'package:unreal_remote_control/project/client/remote_control_http_client.dart';
+import 'package:unreal_remote_control/project/domain/exposed_property.dart';
 import 'package:unreal_remote_control/project/domain/preset.dart';
 import 'package:unreal_remote_control/project/state/project_page_state.dart';
 import 'package:unreal_remote_control/projects/domain/project.dart';
@@ -38,21 +39,15 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
           .map((group) {
             return group.copyWith(
               exposedProperties: group.exposedProperties.where((property) {
-                return property.displayName
-                    .toLowerCase()
-                    .contains(state.presetSearchQuery);
+                return property.displayName.toLowerCase().contains(state.presetSearchQuery);
               }).toList(),
               exposedFunctions: group.exposedFunctions.where((function) {
-                return function.displayName
-                    .toLowerCase()
-                    .contains(state.presetSearchQuery);
+                return function.displayName.toLowerCase().contains(state.presetSearchQuery);
               }).toList(),
             );
           })
           .where(
-            (group) =>
-                group.exposedProperties.isNotEmpty ||
-                group.exposedFunctions.isNotEmpty,
+            (group) => group.exposedProperties.isNotEmpty || group.exposedFunctions.isNotEmpty,
           )
           .toList(),
     );
@@ -119,6 +114,15 @@ class ProjectPageNotifier extends PageStateNotifier<ProjectPageState> {
         log(stacktrace.toString());
         rethrow;
       }
+    }
+  }
+
+  /// Fetches the property value and updates the currently selected property to the given [property].
+  Future<void> selectProperty(ExposedProperty property) async {
+    final connectionUrl = state.selectedProject?.connectionUrl;
+    final selectedPreset = state.selectedPreset;
+    if (connectionUrl != null && selectedPreset != null) {
+      await _client.getProperty(connectionUrl, selectedPreset.name, property.displayName);
     }
   }
 

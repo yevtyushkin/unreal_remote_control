@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unreal_remote_control/project/domain/preset.dart';
@@ -22,11 +23,25 @@ class ProjectPagePresetSelectionDropdown extends ConsumerWidget {
       ),
     );
 
-    return DropdownButton<Preset>(
+    return DropdownButton2<Preset>(
       hint: const Text('Select preset...'),
       value: selectedPreset,
-      borderRadius: BorderRadius.circular(2),
-      padding: const EdgeInsets.only(left: 8, right: 4),
+      underline: const SizedBox(),
+      buttonStyleData: ButtonStyleData(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.5),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(4),
+          ),
+        ),
+      ),
+      dropdownStyleData: const DropdownStyleData(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(4),
+          ),
+        ),
+      ),
       items: [
         ...presets.map(
           (preset) {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart';
 import 'package:unreal_remote_control/project/client/response/get_preset_response.dart';
@@ -33,6 +34,10 @@ class RemoteControlHttpClient {
     );
   }
 
+  Future<void> getProperty(String baseUrl, String presetName, String propertyName) async {
+    await _getAndParse(baseUrl, '/remote/preset/$presetName/property/$propertyName', (_) {});
+  }
+
   /// Sends the get request to the given [baseUrl], [path] and returns the
   /// parsed response using the given [fromJson]
   Future<T> _getAndParse<T>(
@@ -45,6 +50,7 @@ class RemoteControlHttpClient {
     final url = Uri.parse(rawUrl);
 
     final response = await _client.get(url);
+    log(response.body);
     final json = jsonDecode(response.body) as Map<String, dynamic>;
 
     return fromJson(json);

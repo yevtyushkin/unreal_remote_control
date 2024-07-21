@@ -25,7 +25,11 @@ class ProjectPage extends StatelessWidget {
           VerticalDivider(),
           Expanded(
             flex: 4,
-            child: SizedBox(),
+            child: Row(
+              children: [
+                Expanded(child: Placeholder()),
+              ],
+            ),
           ),
         ],
       ),

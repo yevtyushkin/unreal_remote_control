@@ -9,6 +9,7 @@ environment:
   sdk: '>=3.0.1 <4.0.0'
 
 dependencies:
+  dropdown_button2: ^2.3.9
   flutter:
     sdk: flutter
   flutter_colorpicker: ^1.1.0
