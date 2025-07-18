@@ -33,7 +33,7 @@ jobs:
           directory: build/macos/Build/Products/Release
 
       - name: Upload macOS artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Unreal-Remote-Control-UI-macos
           path: build/macos/Build/Products/Release/Unreal-Remote-Control-UI-macos.zip
@@ -62,7 +62,7 @@ jobs:
           directory: build/windows/x64/runner/Release
 
       - name: Upload Windows artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Unreal-Remote-Control-UI-windows
           path: build/windows/x64/runner/Release/Unreal-Remote-Control-UI-windows.zip
