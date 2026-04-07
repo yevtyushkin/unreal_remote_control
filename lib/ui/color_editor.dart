@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart' as cp;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:unreal_remote_control/logic/property_value_with_metadata.dart';
@@ -53,8 +53,8 @@ class ColorEditor extends HookWidget {
               children: [
                 Flexible(
                   flex: 2,
-                  child: ColorPicker(
-                    paletteType: PaletteType.hueWheel,
+                  child: cp.ColorPicker(
+                    paletteType: cp.PaletteType.hueWheel,
                     pickerColor: currentColor.value,
                     onColorChanged: (c) => currentColor.value = c,
                     colorPickerWidth: constraints.maxWidth * 0.7,

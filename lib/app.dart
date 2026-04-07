@@ -10,8 +10,8 @@ class App extends StatelessWidget {
       title: 'Unreal Engine Remote Control',
       routerConfig: router,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorSchemes.darkGreen(),
+      theme: const ThemeData(
+        colorScheme: ColorSchemes.darkSlate,
         radius: 1,
       ),
     );
